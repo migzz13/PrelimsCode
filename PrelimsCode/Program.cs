@@ -45,7 +45,6 @@ namespace PrelimsCode
         {
             string encryptedMessage = Encrypt(message, key);
 
-            // Save the encrypted message to a file
             SaveToFile("encrypted_message.txt", encryptedMessage);
 
             Console.WriteLine($"Encrypted message: {encryptedMessage}");
@@ -53,7 +52,6 @@ namespace PrelimsCode
 
         static void DecryptMessage(string key)
         {
-            // Read the encrypted message from the file
             string encryptedMessageFromFile = ReadFromFile("encrypted_message.txt");
 
             string decryptedMessage = Decrypt(encryptedMessageFromFile, key);
