@@ -12,30 +12,42 @@ namespace PrelimsCode
         static void Main(string[] args)
         {
             Console.Write("Would you like to encrypt or decrypt a message? [E / D] : ");
-            string choice = Console.ReadLine().ToLower();
+            string choice = Console.ReadLine().ToUpper();
+            Console.WriteLine("Machine Mode has been set.");
+            Console.ReadKey();
 
             switch (choice)
             {
-                case "e":
-                    Console.Write("Enter the encryption key (phrase or sentence): ");
+                case "E":
+                    Console.Clear();
+                    Console.Write("What is the key you want to set? : ");
                     string encryptionKey = Console.ReadLine();
-                    Console.Write("Enter the message to encrypt: ");
+                    Console.WriteLine("Cypher has been set.");
+                    Console.ReadKey();
+                    Console.Clear();
+                    Console.WriteLine("Please enter the message you want to encrypt: ");
                     string messageToEncrypt = Console.ReadLine();
 
                     EncryptMessage(encryptionKey, messageToEncrypt);
+                    Console.WriteLine("Press any key to close the program");
                     Console.ReadKey();
                     break;
 
-                case "d":
-                    Console.Write("Enter the decryption key (phrase or sentence): ");
+                case "D":
+                    Console.Clear();
+                    Console.Write("Please enter the key you want to set? : ");
                     string decryptionKey = Console.ReadLine();
-
+                    Console.WriteLine("Cypher has been set");
+                    Console.ReadKey();
+                    Console.Clear();
                     DecryptMessage(decryptionKey);
+                    Console.WriteLine("Message has been successfully decrypted.");
+                    Console.WriteLine("Press any key to close the program");
                     Console.ReadKey();
                     break;
 
                 default:
-                    Console.WriteLine("Invalid setting. Please try again. Press any key to continue.");
+                    Console.WriteLine("Invalid Setting please try again. Press any key to continue.");
                     Console.ReadKey();
                     break;
             }
@@ -45,17 +57,19 @@ namespace PrelimsCode
         {
             string encryptedMessage = Encrypt(message, key);
 
-            SaveToFile("encrypted_message.txt", encryptedMessage);
+            SaveToFile("eMessage.txt", encryptedMessage);
 
-            Console.WriteLine($"Encrypted message: {encryptedMessage}");
+            Console.WriteLine("Message has been successfully encrypted and written to eMessage.txt");
         }
 
         static void DecryptMessage(string key)
         {
-            string encryptedMessageFromFile = ReadFromFile("encrypted_message.txt");
+            string encryptedMessageFromFile = ReadFromFile("eMessage.txt");
 
             string decryptedMessage = Decrypt(encryptedMessageFromFile, key);
-            Console.WriteLine($"Decrypted message: {decryptedMessage}");
+            Console.WriteLine("Reading eMessage.txt and decrypting using the provided key.");
+            Console.WriteLine($"The decrypted message is: ");
+            Console.WriteLine(decryptedMessage);
         }
 
         static void SaveToFile(string fileName, string content)
