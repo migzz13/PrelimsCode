@@ -11,68 +11,86 @@ namespace PrelimsCode
     {
         static void Main(string[] args)
         {
+            MachineMode();
+        }
+        static void MachineMode()
+        {
+            bool cipher = true;
+            
+            while (cipher)
+            {
             Console.Write("Would you like to encrypt or decrypt a message? [E / D] : ");
             string choice = Console.ReadLine().ToUpper();
-            Console.WriteLine("Machine Mode has been set.");
-            Console.ReadKey();
 
-            switch (choice)
-            {
-                case "E":
-                    Console.Clear();
-                    Console.Write("What is the key you want to set? : ");
-                    string encryptionKey = Console.ReadLine();
-                    Console.WriteLine("Cypher has been set.");
-                    Console.ReadKey();
-                    Console.Clear();
-                    Console.WriteLine("Please enter the message you want to encrypt: ");
-                    string messageToEncrypt = Console.ReadLine();
+                switch (choice)
+                {
+                    case "E":
+                        Console.WriteLine("Machine Mode has been set.");
+                        Console.ReadKey();
+                        Console.Clear();
 
-                    EncryptMessage(encryptionKey, messageToEncrypt);
-                    Console.WriteLine("Press any key to close the program");
-                    Console.ReadKey();
-                    break;
+                        Console.Write("What is the key you want to set? : ");
+                        string encryptionKey = Console.ReadLine();
+                        Console.WriteLine("Cypher has been set.");
+                        Console.ReadKey();
+                        Console.Clear();
 
-                case "D":
-                    Console.Clear();
-                    Console.Write("Please enter the key you want to set? : ");
-                    string decryptionKey = Console.ReadLine();
-                    Console.WriteLine("Cypher has been set");
-                    Console.ReadKey();
-                    Console.Clear();
-                    DecryptMessage(decryptionKey);
-                    Console.WriteLine("Message has been successfully decrypted.");
-                    Console.WriteLine("Press any key to close the program");
-                    Console.ReadKey();
-                    break;
+                        Console.WriteLine("Please enter the message you want to encrypt: ");
+                        string messageToEncrypt = Console.ReadLine();
 
-                default:
-                    Console.WriteLine("Invalid Setting please try again. Press any key to continue.");
-                    Console.ReadKey();
-                    break;
+                        EncryptMessage(encryptionKey, messageToEncrypt);
+                        Console.WriteLine("Press any key to close the program");
+                        Console.ReadKey();
+                        cipher = false;
+                        break;
+
+                    case "D":
+                        Console.WriteLine("Machine Mode has been set.");
+                        Console.ReadKey();
+                        Console.Clear();
+
+                        Console.Write("Please enter the key you want to set? : ");
+                        string decryptionKey = Console.ReadLine();
+                        Console.WriteLine("Cypher has been set");
+                        Console.ReadKey();
+                        Console.Clear();
+
+                        DecryptMessage(decryptionKey);
+                        Console.WriteLine("Message has been successfully decrypted.");
+                        Console.WriteLine("Press any key to close the program");
+                        Console.ReadKey();
+                        cipher = false;
+                        break;
+
+                    default:
+                        Console.WriteLine("Invalid Setting please try again. Press any key to continue.");
+                        Console.ReadKey();
+                        Console.Clear();        
+                        break;
+                }
             }
         }
 
         static void EncryptMessage(string key, string message)
         {
-            string encryptedMessage = Encrypt(message, key);
+            string encryptedMessage = EncryptLogic(message, key);
 
-            SaveToFile("eMessage.txt", encryptedMessage);
+            StreamWriter("Message1.txt", encryptedMessage);
 
             Console.WriteLine("Message has been successfully encrypted and written to eMessage.txt");
         }
 
         static void DecryptMessage(string key)
         {
-            string encryptedMessageFromFile = ReadFromFile("eMessage.txt");
+            string encryptedMessageFromFile = StreamReader("Message1.txt");
 
-            string decryptedMessage = Decrypt(encryptedMessageFromFile, key);
-            Console.WriteLine("Reading eMessage.txt and decrypting using the provided key.");
+            string decryptedMessage = DecryptLogic(encryptedMessageFromFile, key);
+            Console.WriteLine("Reading Message1.txt and decrypting using the provided key.");
             Console.WriteLine($"The decrypted message is: ");
             Console.WriteLine(decryptedMessage);
         }
 
-        static void SaveToFile(string fileName, string content)
+        static void StreamWriter(string fileName, string content)
         {
             using (StreamWriter writer = new StreamWriter(fileName))
             {
@@ -80,7 +98,7 @@ namespace PrelimsCode
             }
         }
 
-        static string ReadFromFile(string fileName)
+        static string StreamReader(string fileName)
         {
             using (StreamReader reader = new StreamReader(fileName))
             {
@@ -88,7 +106,7 @@ namespace PrelimsCode
             }
         }
 
-        static string Encrypt(string input, string key)
+        static string EncryptLogic(string input, string key)
         {
             char[] result = input.ToCharArray();
             int keyLength = key.Length;
@@ -109,7 +127,7 @@ namespace PrelimsCode
             return new string(result);
         }
 
-        static string Decrypt(string input, string key)
+        static string DecryptLogic(string input, string key)
         {
             char[] result = input.ToCharArray();
             int keyLength = key.Length;
@@ -127,7 +145,6 @@ namespace PrelimsCode
                     result[i] = (char)(newPosition + offset);
                 }
             }
-
             return new string(result);
         }
     }
