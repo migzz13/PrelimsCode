@@ -9,18 +9,23 @@ namespace PrelimsCode
 {
     internal class Program
     {
+        static List<char> alphabet = new List<char>();
+        static char[] letters = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 
+            'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 
+            'X', 'Y', 'Z' };
         static void Main(string[] args)
         {
             MachineMode();
         }
+
         static void MachineMode()
         {
             bool cipher = true;
-            
+
             while (cipher)
             {
-            Console.Write("Would you like to encrypt or decrypt a message? [E / D] : ");
-            string choice = Console.ReadLine().ToUpper();
+                Console.Write("Would you like to encrypt or decrypt a message? [E / D] : ");
+                string choice = Console.ReadLine().ToUpper();
 
                 switch (choice)
                 {
@@ -29,17 +34,12 @@ namespace PrelimsCode
                         Console.ReadKey();
                         Console.Clear();
 
-                        Console.Write("What is the key you want to set? : ");
-                        string encryptionKey = Console.ReadLine();
-                        Console.WriteLine("Cypher has been set.");
-                        Console.ReadKey();
-                        Console.Clear();
-
-                        Console.WriteLine("Please enter the message you want to encrypt: ");
-                        string messageToEncrypt = Console.ReadLine();
-
-                        EncryptMessage(encryptionKey, messageToEncrypt);
-                        Console.WriteLine("Press any key to close the program");
+                        string key = Key();
+                        alphabet = EncryptChar(letters, key);
+                        Console.WriteLine("Please input the message you want to encrypt:");
+                        string word = Console.ReadLine().ToUpper();
+                        string final = Encryption(word, letters, alphabet);
+                        StreamWriter(final, "eMessage.txt");
                         Console.ReadKey();
                         cipher = false;
                         break;
@@ -49,13 +49,13 @@ namespace PrelimsCode
                         Console.ReadKey();
                         Console.Clear();
 
-                        Console.Write("Please enter the key you want to set? : ");
-                        string decryptionKey = Console.ReadLine();
-                        Console.WriteLine("Cypher has been set");
-                        Console.ReadKey();
-                        Console.Clear();
-
-                        DecryptMessage(decryptionKey);
+                        key = Key();
+                        alphabet = EncryptChar(letters, key);
+                        word = StreamReader("eMessage.txt");
+                        final = Decryption(word, letters, alphabet);
+                        Console.WriteLine("Reading eMessage.txt and decrypting using the provided key.");
+                        Console.WriteLine("The decrypted message is:");
+                        Console.WriteLine(final);
                         Console.WriteLine("Message has been successfully decrypted.");
                         Console.WriteLine("Press any key to close the program");
                         Console.ReadKey();
@@ -65,87 +65,120 @@ namespace PrelimsCode
                     default:
                         Console.WriteLine("Invalid Setting please try again. Press any key to continue.");
                         Console.ReadKey();
-                        Console.Clear();        
+                        Console.Clear();
                         break;
                 }
             }
         }
-
-        static void EncryptMessage(string key, string message)
+        static string Key()
         {
-            string encryptedMessage = EncryptLogic(message, key);
-
-            StreamWriter("Message1.txt", encryptedMessage);
-
-            Console.WriteLine("Message has been successfully encrypted and written to eMessage.txt");
+            string key = "";
+            Console.Write("What is the key you want to set? : ");
+            key = Console.ReadLine().ToUpper();
+            Console.WriteLine("Cypher has been set.");
+            Console.ReadKey();
+            Console.Clear();
+            return key;
         }
 
-        static void DecryptMessage(string key)
+        static List<char> EncryptChar(char[] letter, string key)
         {
-            string encryptedMessageFromFile = StreamReader("Message1.txt");
-
-            string decryptedMessage = DecryptLogic(encryptedMessageFromFile, key);
-            Console.WriteLine("Reading Message1.txt and decrypting using the provided key.");
-            Console.WriteLine($"The decrypted message is: ");
-            Console.WriteLine(decryptedMessage);
-        }
-
-        static void StreamWriter(string fileName, string content)
-        {
-            using (StreamWriter writer = new StreamWriter(fileName))
+            List<char> temp = new List<char>();
+            for (int i = 0; i < key.Length; i++)
             {
-                writer.Write(content);
+                char c = key[i];
+                int cint = (int)c;
+                if (cint > 64 && cint < 91)
+                {
+                    if (!temp.Contains(c))
+                    {
+                        temp.Add(c);
+                    }
+                }
             }
+            for (int i = 0; i < letters.Length; i++)
+            {
+                if (!temp.Contains(letters[i]))
+                {
+                    temp.Add(letters[i]);
+                }
+            }
+            return temp;
+        }
+
+        static string Encryption(string message, char[] letters, List<char> encryptletters)
+        {
+            string encryptedMessage = "";
+            foreach (char letter in message)
+            {
+                if (char.IsUpper(letter))
+                {
+                    for (int i = 0; i < letters.Length; i++)
+                    {
+                        if (letter == letters[i])
+                        {
+                            encryptedMessage += encryptletters[i];
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    encryptedMessage += letter;
+                }
+            }
+
+            return encryptedMessage;
+        }
+
+        static string Decryption(string encryptMessage, char[] letters, List<char> encryptletters)
+        {
+            string decryptedMessage = "";
+
+            foreach (char letter in encryptMessage)
+            {
+                if (char.IsUpper(letter))
+                {
+                    for (int i = 0; i < encryptletters.Count; i++)
+                    {
+                        if (letter == encryptletters[i])
+                        {
+                            decryptedMessage += letters[i];
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    decryptedMessage += letter;
+                }
+            }
+
+            return decryptedMessage;
+        }
+
+        static void StreamWriter(string final, string fileName)
+        {
+            using (StreamWriter sw = new StreamWriter(fileName))
+            {
+                sw.Write(final);
+            }
+            Console.WriteLine("Message has been successfully encrypted and written to eMessage.txt");
+            Console.WriteLine("Press any key to close the program");
         }
 
         static string StreamReader(string fileName)
         {
-            using (StreamReader reader = new StreamReader(fileName))
+            string total = "";
+            string line = "";
+            using (StreamReader sr = new StreamReader(fileName))
             {
-                return reader.ReadToEnd();
-            }
-        }
-
-        static string EncryptLogic(string input, string key)
-        {
-            char[] result = input.ToCharArray();
-            int keyLength = key.Length;
-
-            for (int i = 0; i < result.Length; i++)
-            {
-                if (char.IsLetter(result[i]))
+                while ((line = sr.ReadLine()) != null)
                 {
-                    char offset = char.IsUpper(result[i]) ? 'A' : 'a';
-                    int keyIndex = i % keyLength;
-                    int keyOffset = char.IsUpper(key[keyIndex]) ? 'A' : 'a';
-                    int shift = key[keyIndex] - keyOffset;
-
-                    result[i] = (char)((result[i] + shift - offset + 26) % 26 + offset);
+                    total += line;
                 }
             }
-
-            return new string(result);
-        }
-
-        static string DecryptLogic(string input, string key)
-        {
-            char[] result = input.ToCharArray();
-            int keyLength = key.Length;
-
-            for (int i = 0; i < result.Length; i++)
-            {
-                if (char.IsLetter(result[i]))
-                {
-                    char offset = char.IsUpper(result[i]) ? 'A' : 'a';
-                    int keyIndex = i % keyLength;
-                    int keyOffset = char.IsUpper(key[keyIndex]) ? 'A' : 'a';
-                    int shift = key[keyIndex] - keyOffset;
-
-                    int newPosition = (result[i] - offset - shift + 26) % 26;
-                    result[i] = (char)(newPosition + offset);
-                }
-            }
-            return new string(result);
+            return total;
         }
     }
 }
