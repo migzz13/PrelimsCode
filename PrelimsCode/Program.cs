@@ -81,7 +81,7 @@ namespace PrelimsCode
             return key;
         }
 
-        static List<char> EncryptChar(char[] letter, string key)
+        static List<char> ModifiedAlphabet(char[] letter, string key)
         {
             List<char> temp = new List<char>();
             for (int i = 0; i < key.Length; i++)
