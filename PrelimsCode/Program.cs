@@ -35,7 +35,7 @@ namespace PrelimsCode
                         Console.Clear();
 
                         string key = Key();
-                        alphabet = EncryptChar(letters, key);
+                        alphabet = ModifiedAlphabet(letters, key);
                         Console.WriteLine("Please input the message you want to encrypt:");
                         string word = Console.ReadLine().ToUpper();
                         string final = Encryption(word, letters, alphabet);
@@ -50,7 +50,7 @@ namespace PrelimsCode
                         Console.Clear();
 
                         key = Key();
-                        alphabet = EncryptChar(letters, key);
+                        alphabet = ModifiedAlphabet(letters, key);
                         word = StreamReader("eMessage.txt");
                         final = Decryption(word, letters, alphabet);
                         Console.WriteLine("Reading eMessage.txt and decrypting using the provided key.");
