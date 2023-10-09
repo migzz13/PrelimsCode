@@ -15,7 +15,7 @@ namespace PrelimsCode
             'X', 'Y', 'Z' };
         static void Main(string[] args)
         {
-            MachineMode();
+            MainDisplay();
         }
 
         static void MainDisplay()
