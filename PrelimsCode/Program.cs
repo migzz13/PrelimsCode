@@ -20,9 +20,9 @@ namespace PrelimsCode
 
         static void MachineMode()
         {
-            bool cipher = true;
+            bool cipher = false;
 
-            while (cipher)
+            while (!cipher)
             {
                 Console.Write("Would you like to encrypt or decrypt a message? [E / D] : ");
                 string choice = Console.ReadLine().ToUpper();
@@ -41,7 +41,7 @@ namespace PrelimsCode
                         string final = Encryption(word, letters, alphabet);
                         StreamWriter(final, "eMessage.txt");
                         Console.ReadKey();
-                        cipher = false;
+                        cipher = true;
                         break;
 
                     case "D":
@@ -59,7 +59,7 @@ namespace PrelimsCode
                         Console.WriteLine("Message has been successfully decrypted.");
                         Console.WriteLine("Press any key to close the program");
                         Console.ReadKey();
-                        cipher = false;
+                        cipher = true;
                         break;
 
                     default:
