@@ -18,7 +18,7 @@ namespace PrelimsCode
             MachineMode();
         }
 
-        static void MachineMode()
+        static void MainDisplay()
         {
             bool cipher = false;
 
